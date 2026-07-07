@@ -22,7 +22,7 @@ docker compose up --build
 # Install dependencies
 pnpm install
 
-# Build shared package first
+# Build shared package first (Required to generate types for backend/frontend)
 pnpm --filter @dashboard-builder/shared build
 
 # Run backend and frontend in parallel
@@ -55,6 +55,13 @@ Raw JSON is strictly validated against Zod schemas in the `shared` package. Tran
 ### Developer Experience (DX)
 To add a 5th chart type, a developer does not touch the dashboard engine, layout logic, or state management. They define a Zod schema, write a React component, and call `WidgetRegistry.register()`. See [PIE_CHART_TEMPLATE.md](./packages/frontend/src/widgets/PIE_CHART_TEMPLATE.md) for the copy-paste guide.
 
+## Documentation
+
+As requested in the submission guidelines, detailed documentation is located in the `/docs` folder:
+
+- **[docs/ADR.md](./docs/ADR.md)**: Explains the choice of Zustand over Redux and Recharts over alternatives.
+- **[docs/data-drift.md](./docs/data-drift.md)**: Strategy for detecting, responding to, and preventing data drift in a live production stream.
+
 ## Tech Stack
 
 | Layer    | Technology                          |
@@ -78,7 +85,7 @@ To add a 5th chart type, a developer does not touch the dashboard engine, layout
 
 ## Adding a New Widget
 
-1. **Define data schema** in `packages/shared/src/schemas.ts`
+1. **Define data schema** in `packages/shared/src/schemas.ts` (add widget type to `packages/shared/src/types.ts`)
 2. **Create transformer** in `packages/shared/src/data-transformers.ts` with `validate()`, `transform()`, `toChartFormat()`
 3. **Add mock generator** in `packages/backend/src/mock-engine.ts`
 4. **Create widget folder** under `packages/frontend/src/widgets/{type}/`:
